@@ -1,0 +1,19 @@
+<?php
+
+namespace  $NAMESPACE$;
+
+use App\Traits\Enum\EnumToArray;
+
+enum $CLASS_NAME$: string
+{
+    use EnumToArray;
+
+    case EXAMPLE = "example";
+
+     static function getStatus($type): string
+    {
+        return match ($type) {
+            'example' => __('example'),
+        };
+    }
+}

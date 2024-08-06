@@ -1,0 +1,178 @@
+@extends(getAdminView('layouts.master'))
+@section('title')
+{{$item->name}} - Lokasyon Düzenleme
+@endsection
+@section('css')
+    <link href="{{ URL::asset('/assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ URL::asset('/assets/libs/dropify/dropify.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ URL::asset('/assets/libs/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
+@endsection
+
+@section('content')
+    @component(getAdminView('common-components.breadcrumb'))
+        @slot('pagetitle') Lokasyonlar @endslot
+        @slot('title') {{$item->name}} - Lokasyon Düzenleme @endslot
+    @endcomponent
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">İçerik Alanları</h4>
+                    @if(session()->has('alert'))
+                        <div class="alert alert-{{ session()->get('alert')['status'] }} alert-dismissible fade show" role="alert">
+                            <h5 class="text-success"> {{ session()->get('alert')['title'] }}</h5>
+                            <p>  {{ session()->get('alert')['message'] }}</p>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            </button>
+                        </div>
+                    @endif
+                    <form  action="{{route(getRouteWeb('locations.update'),$item->id)}}"  method="post" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                         <div class="row d-flex">
+                            <div class="mb-3 row">
+                                <label for="input_title" class="col-md-2 col-form-label">Başlık</label>
+                                <div class="col-md-10">
+                                    <input class="form-control" name="name" type="text" value="{{$item->name}}" id="name">
+                                </div>
+                            </div>
+                        <div class="mb-3 row">
+                            <label class="form-label col-md-2 col-form-label" for="name">Durum</label>
+                            <div class="select2-full col-md-10">
+                                <select id="status" name="status" type="text" class="form-control form-select select2">
+                                    <option value="ACTIVE" @if($item->status == 'ACTIVE') selected @endif> Aktif</option>
+                                    <option value="PASSIVE" @if($item->status == 'PASSIVE') selected @endif>Pasif</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-reverse flex-wrap gap-2">
+                            <button type="submit" class="btn btn-success"> <i class="uil uil-file-alt"></i> Kaydet </button>
+                        </div>
+
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <!-- end row -->
+
+
+
+@endsection
+@section('script')
+    <script>
+        function updateSlug() {
+            const title = document.getElementById('input_title').value;
+            const slug = slugify(title); // Bu fonksiyon slug'ı oluşturacak özel bir slugify fonksiyonudur.
+            document.getElementById('input_slug').value = slug;
+        }
+
+          function slugify(text) {
+        const turkishCharacters = {
+            'ı': 'i',
+            'ğ': 'g',
+            'ü': 'u',
+            'ş': 's',
+            'ö': 'o',
+            'ç': 'c',
+            'İ': 'i',
+            'Ğ': 'g',
+            'Ü': 'u',
+            'Ş': 's',
+            'Ö': 'o',
+            'Ç': 'c'
+        };
+
+        return text.toString().toLowerCase()
+            .replace(/\s+/g, '-') // Boşlukları tireye çevir
+            .replace(/[ığüşöçİĞÜŞÖÇ]/g, char => turkishCharacters[char] || char)
+            .replace(/[^\w\-]+/g, '') // Alfanümerik dışındaki karakterleri kaldır
+            .replace(/\-\-+/g, '-') // Birden fazla tireyi tek bir tireye çevir
+            .replace(/^-+/, '') // Başındaki tireleri kaldır
+            .replace(/-+$/, ''); // Sonundaki tireleri kaldır
+    }
+    </script>
+    <script src="{{ URL::asset('/assets/libs/dropify/dropify.min.js') }}"></script>
+    <script src="{{ URL::asset('/assets/libs/ckeditor/ckeditor.min.js') }}"></script>
+
+    <!-- lazyload.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.11/jquery.lazy.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.11/jquery.lazy.plugins.min.js"></script>
+    <script src="{{ URL::asset('/assets/libs/select2/select2.min.js') }}"></script>
+
+    <script type="text/javascript">
+        function removeModal(id){
+            var modalToggle = new bootstrap.Modal(document.getElementById('removeModal'),{}); // relatedTarget
+
+            var removeModalForm = $("#removeModalForm");
+            var deleteEndpoint = removeModalForm.attr("action");
+            removeModalForm.attr("action",deleteEndpoint+"/"+id);
+            modalToggle.show()
+        }
+        $(".select2").select2();
+
+        var imagenUrl = "";
+        var dropifyEvent;
+        var formAction = "{{route(getRouteWeb('button_styles.store'))}}";
+        // Dropify eklentisini bir kez oluşturun
+        dropifyEvent = $('.dropify').dropify({
+            defaultFile: imagenUrl,
+            messages: {
+                'default': 'Dosyanızı buraya sürükleyin veya tıklayın',
+                'replace': 'Değiştirmek için sürükleyin veya tıklayın',
+                'remove': 'Kaldır',
+                'error': 'Üzgünüz, bir hata oluştu.'
+            },
+            error: {
+                'fileSize': $('.dropify').data('file-size-error'),
+                'minWidth': $('.dropify').data('min-width-error'),
+                'maxWidth': $('.dropify').data('max-width-error'),
+                'minHeight': $('.dropify').data('min-height-error'),
+                'maxHeight': $('.dropify').data('max-height-error'),
+                'imageFormat': $('.dropify').data('image-format-error')
+            }
+        });
+
+
+
+
+
+        let editor;
+        ClassicEditor
+            .create(document.querySelector('#classic-editor'), {
+                ckfinder: {
+                    uploadUrl: '/ckeditor/upload' // Buraya dosyaların yükleneceği route'un URL'sini ekleyin
+                }
+            })
+            .then(newEditor => {
+                editor = newEditor;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+
+        // CKEditor içeriğini temizle
+        function clearEditorContent() {
+            editor.setData('');
+        }
+
+
+
+        function getImage(image) {
+            var storageCdn = '{{config('image.storage_asset_url')}}';
+            var storageFolder = '{{config('image.cdn_base_dir')}}';
+            return storageCdn + storageFolder + image;
+        }
+
+
+
+        $(document).ready(function () {
+            // Lazy loading özelliğini etkinleştirme
+            $('img.lazyload').lazy();
+        });
+    </script>
+
+@endsection

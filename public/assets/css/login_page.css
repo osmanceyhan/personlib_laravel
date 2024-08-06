@@ -1,0 +1,56 @@
+.title{
+    font-size: 1rem;
+    color:white;    text-align: center;
+
+    padding-top: 20px;
+}
+.text{
+    font-size: 15px;
+    color:white;
+    text-align: center;
+    padding-top: 15px;
+}
+.imageSection{
+    background: #2852be;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: auto !important;
+}
+.button{padding:15px;display: flex;justify-content: center;align-items: center;}
+.button button{
+    display: flex;
+    width: 270px;
+    text-align: center;
+    height: 48px;
+    line-height: 48px;
+    color: #162a4c;
+    letter-spacing: 1px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    background: #ffffff;
+    justify-content: center;
+    align-items: center;
+}
+.logo-container{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.logo-container img{
+    height: 30px;
+
+}
+.auth_forget_link{background:none;border:none;font-size:.8rem;margin-top:.5rem;display: flex;color: #2752be;}
+.register_form{padding: 0 4rem;}
+.register_modal .modal-dialog{
+    max-width: 928px;
+}
+
+.register_form .col-md-6{
+    margin-bottom: 1rem;
+}
+.data-login-button{}
